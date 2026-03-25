@@ -39,9 +39,9 @@
 
 ## 9. Docker 部署配置
 
-- [ ] 9.1 创建 `nginx.conf`：静态文件服务（try_files 兜底 index.html）+ API 反向代理（/api/ → backend:8080）
-- [ ] 9.2 创建 `Dockerfile`：两阶段构建（node:20-alpine 构建 → nginx:alpine 运行）
-- [ ] 9.3 创建 `.dockerignore`：排除 node_modules、dist、.git 等
+- [x] 9.1 创建 `nginx.conf`：静态文件服务（try_files 兆底 index.html）+ API 反向代理（/api/ → backend:8080）
+- [x] 9.2 创建 `Dockerfile`：两阶段构建（node:20-alpine 构建 → nginx:alpine 运行）
+- [x] 9.3 创建 `.dockerignore`：排除 node_modules、dist、.git 等
 
 ## 10. 验证
 
