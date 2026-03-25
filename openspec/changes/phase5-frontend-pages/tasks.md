@@ -4,13 +4,13 @@
 
 ## 2. Dashboard 页面 — KPI 卡片
 
-- [ ] 2.1 实现 `DashboardView.vue` 的 KPI 卡片区域：4 张 `a-statistic` 卡片（总单量、总工时、月度费用、人效），调用 `getOverview` API，watch `currentWarehouse` 自动刷新，含 loading 状态
+- [x] 2.1 实现 `DashboardView.vue` 的 KPI 卡片区域：4 张 `a-statistic` 卡片（总单量、总工时、月度费用、人效），调用 `getOverview` API，watch `currentWarehouse` 自动刷新，含 loading 状态
 
 ## 3. Dashboard 页面 — 图表
 
-- [ ] 3.1 实现日出库单量趋势折线图（ECharts `LineChart`），调用 `getTrend` API，X 轴日期 / Y 轴单量，多仓分 series
-- [ ] 3.2 实现月度费用构成堆叠柱状图（ECharts `BarChart`），按费用类型堆叠
-- [ ] 3.3 实现操作类型工作量分布饼图（ECharts `PieChart` 环形），显示百分比 Tooltip
+- [x] 3.1 实现日出库单量趋势折线图（ECharts `LineChart`），调用 `getTrend` API，X 轴日期 / Y 轴单量，多仓分 series
+- [x] 3.2 实现月度费用构成堆叠柱状图（ECharts `BarChart`），按费用类型堆叠
+- [x] 3.3 实现操作类型工作量分布饼图（ECharts `PieChart` 环形），显示百分比 Tooltip
 
 ## 4. 费用基线页面 — 筛选与表格
 
