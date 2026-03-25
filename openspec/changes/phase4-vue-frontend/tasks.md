@@ -45,4 +45,4 @@
 
 ## 10. 验证
 
-- [ ] 10.1 执行 `npm install && npm run dev` 验证开发服务器正常启动，访问首页显示 MainLayout + Dashboard 占位页面，侧栏菜单导航正常
+- [x] 10.1 执行 `npm install && npm run dev` 验证开发服务器正常启动，访问首页显示 MainLayout + Dashboard 占位页面，侧栏菜单导航正常
