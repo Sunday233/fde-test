@@ -95,7 +95,7 @@
 ## Phase 4: 前端 — Vue 3 项目搭建
 
 - [ ] **T4.1** Vite + Vue 3 + TypeScript 项目初始化
-- [ ] **T4.2** 安装配置 Ant Design Vue 4.x
+- [ ] **T4.2** 安装配置 Ant Design Vue 4.x + Tailwind.css
 - [ ] **T4.3** 安装配置 vue-echarts + echarts
 - [ ] **T4.4** 安装配置 Vue Router、Pinia、Axios
 - [ ] **T4.5** 创建主布局 `MainLayout.vue`（左侧菜单 + 顶栏 + 内容区）
