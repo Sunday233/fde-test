@@ -16,13 +16,13 @@
 
 ## 4. 服务通信验证
 
-- [ ] 4.1 启动三服务（`docker compose up --build -d`），验证 frontend → backend（浏览器访问 `http://localhost/api/warehouses` 返回数据）
-- [ ] 4.2 验证 backend → analytics 通信（访问需要 Python 分析结果的 API，如 `/api/impact/factors`，确认返回正常）
+- [x] 4.1 启动三服务（`docker compose up --build -d`），验证 frontend → backend（浏览器访问 `http://localhost/api/warehouses` 返回数据）
+- [x] 4.2 验证 backend → analytics 通信（访问需要 Python 分析结果的 API，如 `/api/impact/factors`，确认返回正常）
 
 ## 5. Volume 持久化验证
 
-- [ ] 5.1 验证 analytics 容器内 `/data/results.db` 存在且有数据；执行 `docker compose down` + `docker compose up -d`，确认数据未丢失
-- [ ] 5.2 验证 `docker compose down -v` 后 volume 被清除，重启后 analytics 重新触发预计算
+- [x] 5.1 验证 analytics 容器内 `/data/results.db` 存在且有数据；执行 `docker compose down` + `docker compose up -d`，确认数据未丢失
+- [x] 5.2 验证 `docker compose down -v` 后 volume 被清除，重启后 analytics 重新触发预计算
 
 ## 6. README 部署说明
 
