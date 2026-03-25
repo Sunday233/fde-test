@@ -34,8 +34,8 @@
 
 ## 8. 入口文件
 
-- [ ] 8.1 配置 `src/main.ts`：按序导入 main.css、echarts 插件，创建 App 并注册 Pinia + Router
-- [ ] 8.2 配置 `src/App.vue`：仅包含 `<RouterView />`
+- [x] 8.1 配置 `src/main.ts`：按序导入 main.css、echarts 插件，创建 App 并注册 Pinia + Router
+- [x] 8.2 配置 `src/App.vue`：仅包含 `<RouterView />`
 
 ## 9. Docker 部署配置
 
