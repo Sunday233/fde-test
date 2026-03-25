@@ -53,4 +53,4 @@
 
 ## 12. 构建验证
 
-- [ ] 12.1 运行 `npx vite build` 确保 TypeScript 编译通过、无构建错误
+- [x] 12.1 运行 `npx vite build` 确保 TypeScript 编译通过、无构建错误
