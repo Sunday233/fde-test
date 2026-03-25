@@ -14,13 +14,13 @@
 
 ## 4. 费用基线页面 — 筛选与表格
 
-- [ ] 4.1 实现 `BaselineView.vue` 的筛选面板：仓库 `a-select` + 月份 `a-date-picker`(picker=month) + 查询按钮，默认加载当前仓库当月数据
-- [ ] 4.2 实现月度基线数据表格（`a-table`，12 列），调用 `getMonthlyBaseline` API，支持分页，金额列 ¥ 格式化
+- [x] 4.1 实现 `BaselineView.vue` 的筛选面板：仓库 `a-select` + 月份 `a-date-picker`(picker=month) + 查询按钮，默认加载当前仓库当月数据
+- [x] 4.2 实现月度基线数据表格（`a-table`，12 列），调用 `getMonthlyBaseline` API，支持分页，金额列 ¥ 格式化
 
 ## 5. 费用基线页面 — 图表
 
-- [ ] 5.1 实现劳务单价对比柱状图（ECharts `BarChart`），从 `MonthlyBaselineVO[]` 提取数据
-- [ ] 5.2 实现双仓月度对比功能：双 `a-select` 选择仓库 + 对比按钮，调用 `compareWarehouses` API，展示分组柱状图
+- [x] 5.1 实现劳务单价对比柱状图（ECharts `BarChart`），从 `MonthlyBaselineVO[]` 提取数据
+- [x] 5.2 实现双仓月度对比功能：双 `a-select` 选择仓库 + 对比按钮，调用 `compareWarehouses` API，展示分组柱状图
 
 ## 6. 影响因素页面 — 因素排序与热力图
 
