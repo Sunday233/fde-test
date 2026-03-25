@@ -24,13 +24,13 @@
 
 ## 6. 影响因素页面 — 因素排序与热力图
 
-- [ ] 6.1 实现 `ImpactView.vue` 的因素重要性排序水平柱状图（ECharts `BarChart` 翻转轴），调用 `getFactors` API，正相关蓝色/负相关红色，watch `currentWarehouse`
-- [ ] 6.2 实现 Pearson 相关系数热力图（ECharts `HeatmapChart`），调用 `getCorrelation` API，使用 `VisualMapComponent` 色阶 -1~1
+- [x] 6.1 实现 `ImpactView.vue` 的因素重要性排序水平柱状图（ECharts `BarChart` 翻转轴），调用 `getFactors` API，正相关蓝色/负相关红色，watch `currentWarehouse`
+- [x] 6.2 实现 Pearson 相关系数热力图（ECharts `HeatmapChart`），调用 `getCorrelation` API，使用 `VisualMapComponent` 色阶 -1~1
 
 ## 7. 影响因素页面 — 散点图与对比
 
-- [ ] 7.1 实现单因素散点图：因素选择器（`a-select`，选项从 `FactorRankVO[]` 获取）+ ECharts `ScatterChart`，调用 `getTrend` API
-- [ ] 7.2 实现双仓因素对比：双 `a-select` 选仓库，分别调用 `getFactors`，并列展示两仓因素排序图（`a-row` / `a-col` 各 span=12）
+- [x] 7.1 实现单因素散点图：因素选择器（`a-select`，选项从 `FactorRankVO[]` 获取）+ ECharts `ScatterChart`，调用 `getTrend` API
+- [x] 7.2 实现双仓因素对比：双 `a-select` 选仓库，分别调用 `getFactors`，并列展示两仓因素排序图（`a-row` / `a-col` 各 span=12）
 
 ## 8. 成本估算页面 — 表单与结果
 
