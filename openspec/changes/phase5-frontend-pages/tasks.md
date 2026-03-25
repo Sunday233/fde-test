@@ -43,13 +43,13 @@
 
 ## 10. 报告页面 — 列表与生成
 
-- [ ] 10.1 实现 `ReportView.vue` 的报告列表（`a-table`，含标题/仓库/时间/操作列），调用 `getReportList` API
-- [ ] 10.2 实现报告生成表单（`a-modal` 弹窗 + `a-form`：仓库选择、开始/结束月份），调用 `generateReport` API，成功后刷新列表
+- [x] 10.1 实现 `ReportView.vue` 的报告列表（`a-table`，含标题/仓库/时间/操作列），调用 `getReportList` API
+- [x] 10.2 实现报告生成表单（`a-modal` 弹窗 + `a-form`：仓库选择、开始/结束月份），调用 `generateReport` API，成功后刷新列表
 
 ## 11. 报告页面 — 预览与下载
 
-- [ ] 11.1 实现 Markdown 在线渲染预览（`a-drawer` 侧拉面板），使用 `markdown-it`（html: false）渲染 `getReportDetail` 返回的内容
-- [ ] 11.2 实现报告 HTML 下载功能：Markdown → HTML + 内联 CSS 模板 → Blob → 下载
+- [x] 11.1 实现 Markdown 在线渲染预览（`a-drawer` 侧拉面板），使用 `markdown-it`（html: false）渲染 `getReportDetail` 返回的内容
+- [x] 11.2 实现报告 HTML 下载功能：Markdown → HTML + 内联 CSS 模板 → Blob → 下载
 
 ## 12. 构建验证
 
