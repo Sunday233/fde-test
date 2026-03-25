@@ -34,12 +34,12 @@
 
 ## 8. 成本估算页面 — 表单与结果
 
-- [ ] 8.1 实现 `EstimateView.vue` 的参数输入表单（`a-form`，8 个 `a-input-number` 字段），调用 `getEstimateDefaults` 加载默认值，含校验规则
-- [ ] 8.2 实现计算结果展示区域（`a-descriptions` 或 `a-statistic` 卡片组，6 项指标），调用 `calculate` API
+- [x] 8.1 实现 `EstimateView.vue` 的参数输入表单（`a-form`，8 个 `a-input-number` 字段），调用 `getEstimateDefaults` 加载默认值，含校验规则
+- [x] 8.2 实现计算结果展示区域（`a-descriptions` 或 `a-statistic` 卡片组，6 项指标），调用 `calculate` API
 
 ## 9. 成本估算页面 — 历史对比
 
-- [ ] 9.1 实现与历史数据对比柱状图（ECharts `BarChart`），对比估算值 vs `getWarehouseDetail` 返回的历史值
+- [x] 9.1 实现与历史数据对比柱状图（ECharts `BarChart`），对比估算值 vs `getWarehouseDetail` 返回的历史值
 
 ## 10. 报告页面 — 列表与生成
 
