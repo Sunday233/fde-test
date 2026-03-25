@@ -30,7 +30,7 @@
 
 ## 7. 主布局组件
 
-- [ ] 7.1 创建 `src/layouts/MainLayout.vue`：Ant Design Layout + Sider（可折叠、5 个菜单项带图标）+ Header（仓库选择器）+ Content（RouterView），菜单选中状态与路由同步
+- [x] 7.1 创建 `src/layouts/MainLayout.vue`：Ant Design Layout + Sider（可折叠、5 个菜单项带图标）+ Header（仓库选择器）+ Content（RouterView），菜单选中状态与路由同步
 
 ## 8. 入口文件
 
