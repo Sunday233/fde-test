@@ -8,7 +8,7 @@
 ## 2. 构建工具配置
 
 - [x] 2.1 配置 `vite.config.ts`：注册 Tailwind CSS 插件、unplugin-vue-components（AntDesignVueResolver）、路径别名 `@` → `src/`
-- [ ] 2.2 创建 `src/assets/main.css`：引入 Tailwind CSS，禁用 preflight 避免与 Ant Design Vue 样式冲突
+- [x] 2.2 创建 `src/assets/main.css`：引入 Tailwind CSS，禁用 preflight 避免与 Ant Design Vue 样式冲突
 - [ ] 2.3 创建 `src/plugins/echarts.ts`：按需注册 echarts 模块（CanvasRenderer、Bar/Line/Pie/Scatter/Heatmap、Grid/Tooltip/Legend/Title/Toolbox/VisualMap）
 
 ## 3. TypeScript 类型定义
