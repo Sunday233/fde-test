@@ -1,0 +1,83 @@
+schema: spec-driven
+
+context: |
+  # wh-op-platform — 科捷仓内操作费用基线分析平台
+
+  ## 项目概述
+  精细化统计仓内操作费用的基线和影响因素，建立费用基线的相关算数应用。
+  核心用途：估算新业务成本和报价、复盘旧业务、设定仓经理效率指标。
+  费用定义：操作费用 = 工时数 × 劳务单价（含固定劳务、长期劳务外包、临时劳务外包）
+
+  ## 技术栈
+  - 项目类型: Monorepo 前后端分离 Web 应用
+  - 前端: Vue 3 + Vite + TypeScript (SFC)
+  - UI 框架: Ant Design Vue 4.x + Tailwind CSS
+  - 图表: ECharts (vue-echarts 封装)
+  - 后端: Spring Boot 3 (Java 21, Maven)
+  - ORM: MyBatis-Plus
+  - 数据分析服务: Python FastAPI (独立微服务)
+  - 数据源: MySQL 5.7 (远端直连 10.126.50.199:3306, 库名 wh_op_baseline, 只读)
+  - 结果存储: SQLite (Docker 内轻量存储预计算结果)
+  - 部署: Docker Compose 单机部署
+  - 认证/权限: 第一版无认证，单一管理员角色
+
+  ## 目录结构 (Monorepo)
+  - frontend/ — Vue 3 前端 (Nginx :80)
+  - backend/ — Spring Boot 3 后端 (:8080)
+  - analytics/ — Python FastAPI 分析服务 (:8000)
+  - data/ — SQLite 预计算结果 (Git 忽略)
+  - docs/ — 文档、Profiling 报告、分析报告
+
+  ## 核心功能模块
+  1. 数据看板 Dashboard — KPI 概览、趋势图、实时指标
+  2. 费用基线分析 — 按仓库/月份/类型查看费用基线
+  3. 影响因素分析 — 相关性分析结果展示、Pearson 热力图
+  4. 成本估算/报价模拟 — 基于固定公式的计算器
+  5. 报告生成 — Markdown/HTML 在线报告渲染与下载
+
+  ## 数据现状
+  - 19 张表，覆盖 2 个仓（天津武清佩森A仓、常熟高新正创B仓），2025-03 和 2025-08 数据
+  - 约 700 万行（最大表: 仓位信息表 206 万行、工作量统计操作明细表 212 万行）
+  - 未来扩展: 10-20 个仓库 × 1 年数据
+
+  ## 架构约定
+  - 前端通过 Nginx 反向代理访问后端 API (/api/ → backend:8080)
+  - Spring Boot 聚合数据查询和分析服务结果，调用 Python 分析服务
+  - Python FastAPI 负责数据分析算法、预计算任务，结果写入 SQLite
+  - 影响因素分析采用预计算模式（非实时），费用公式硬编码
+  - 第一版 MVP 先用 MySQL 跑通，后续可引入 OLAP 引擎
+
+  ## 费用计算公式
+  月度操作费用 = 预估月度总工时(h) × 加权平均单价(元/h) × (1 + 税率)
+  默认税率: 6%
+
+rules:
+  proposal:
+    - 提案需明确属于哪个服务模块 (frontend / backend / analytics)
+    - 涉及数据库查询时需说明是 MySQL 原始数据还是 SQLite 预计算结果
+    - 前端组件遵循 Vue 3 Composition API + TypeScript
+    - 后端 API 路径以 /api/ 开头，遵循 RESTful 风格
+    - 分析服务 API 路径以 /api/ 开头
+    - 始终包含 "非目标" 部分以明确范围
+
+  design:
+    - 用中文书写设计文档
+    - 明确标注各服务间的调用关系和数据流
+    - 数据库操作需注明是 只读MySQL 还是 读写SQLite
+    - 前端图表组件需指定使用的 ECharts 图表类型
+    - 涉及计算的功能需列出完整公式
+
+  specs:
+    - 写中文
+    - Spec 需明确所属服务 (frontend / backend / analytics)
+    - API spec 需包含请求/响应 JSON 示例
+    - 前端 spec 需描述组件树和数据流
+    - 后端 spec 需说明 Mapper/Service/Controller 各层逻辑
+    - 分析服务 spec 需说明算法和数据来源
+
+  tasks:
+    - 单个任务控制在 2 小时以内
+    - 前后端任务需标注依赖关系
+    - 涉及数据库的任务需标注操作的表名
+    - Docker 相关任务需确保 docker-compose.yml 同步更新
+    - 写中文
