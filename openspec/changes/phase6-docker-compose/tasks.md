@@ -12,7 +12,7 @@
 
 ## 3. Nginx 反向代理验证
 
-- [ ] 3.1 检查 `frontend/nginx.conf` 中 `proxy_pass http://backend:8080` 配置，确认在 Docker Compose 网络中可正确解析 `backend` 主机名
+- [x] 3.1 检查 `frontend/nginx.conf` 中 `proxy_pass http://backend:8080` 配置，确认在 Docker Compose 网络中可正确解析 `backend` 主机名
 
 ## 4. 服务通信验证
 
