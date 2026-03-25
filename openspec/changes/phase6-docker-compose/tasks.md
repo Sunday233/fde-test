@@ -6,9 +6,9 @@
 
 ## 2. 环境变量配置
 
-- [ ] 2.1 基于 `.env.example` 创建 `.env` 文件，填写实际 MySQL 连接信息、`ANALYTICS_BASE_URL=http://analytics:8000`、`SQLITE_PATH=/data/results.db`
-- [ ] 2.2 验证 `.gitignore` 已包含 `.env` 规则，确保敏感信息不提交到版本控制
-- [ ] 2.3 同步更新 `.env.example`，确保变量名与 `.env` 完全一致（值使用占位符）
+- [x] 2.1 基于 `.env.example` 创建 `.env` 文件，填写实际 MySQL 连接信息、`ANALYTICS_BASE_URL=http://analytics:8000`、`SQLITE_PATH=/data/results.db`
+- [x] 2.2 验证 `.gitignore` 已包含 `.env` 规则，确保敏感信息不提交到版本控制
+- [x] 2.3 同步更新 `.env.example`，确保变量名与 `.env` 完全一致（值使用占位符）
 
 ## 3. Nginx 反向代理验证
 
