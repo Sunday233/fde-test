@@ -2,7 +2,7 @@
 
 - [x] 1.1 使用 Vite 创建 Vue 3 + TypeScript 项目骨架（`wh-op-platform/frontend/`），配置 tsconfig 严格模式和路径别名 `@`
 - [x] 1.2 安装核心依赖：vue-router@4、pinia@2、axios@1、ant-design-vue@4、@ant-design/icons-vue
-- [ ] 1.3 安装开发依赖：tailwindcss@4、@tailwindcss/vite、unplugin-vue-components、unplugin-auto-import
+- [x] 1.3 安装开发依赖：tailwindcss@4、@tailwindcss/vite、unplugin-vue-components、unplugin-auto-import
 - [ ] 1.4 安装图表依赖：echarts@5、vue-echarts@7
 
 ## 2. 构建工具配置
