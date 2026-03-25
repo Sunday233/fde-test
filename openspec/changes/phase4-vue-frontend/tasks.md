@@ -21,7 +21,7 @@
 
 ## 5. 状态管理
 
-- [ ] 5.1 创建 `src/stores/app.ts`：定义 useAppStore（currentWarehouse 状态）
+- [x] 5.1 创建 `src/stores/app.ts`：定义 useAppStore（currentWarehouse 状态）
 
 ## 6. 路由配置
 
