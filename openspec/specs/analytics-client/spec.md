@@ -1,6 +1,4 @@
-## ADDED Requirements
-
-**所属服务**: backend (Spring Boot 3)
+## MODIFIED Requirements
 
 ### Requirement: Python 分析服务 HTTP 客户端
 
@@ -25,88 +23,23 @@ analytics:
 - 失败时记录 WARN 级别日志（包含异常信息和目标 URL）
 - 返回空数据（空列表或空矩阵），不抛出异常
 
-**调用的 Python API 端点**:
-- `GET /api/impact/factors?warehouseCode={code}` → 返回 JSON 数组
-- `GET /api/impact/correlation?warehouseCode={code}` → 返回 JSON 对象
+**调用的 Python API 端点**（明确 Python 端响应契约）:
+- `GET /api/impact/factors?warehouseCode={code}` → Python 端从 SQLite impact_results 查询，返回 JSON 数组 `[{rank, factorName, correlation, description}]`
+- `GET /api/impact/correlation?warehouseCode={code}` → Python 端从 SQLite impact_results 查询 matrix_json，返回 JSON 对象 `{factors, matrix}`
 
-**请求/响应格式（Python 端）**:
-
-获取因素排序：
-```
-GET http://localhost:8000/api/impact/factors?warehouseCode=12000004
-
-Response:
-[
-  {"rank": 1, "factorName": "出勤人数", "correlation": 0.96, "description": "..."},
-  {"rank": 2, "factorName": "临时劳务人数", "correlation": 0.87, "description": "..."}
-]
-```
-
-获取相关性矩阵：
-```
-GET http://localhost:8000/api/impact/correlation?warehouseCode=12000004
-
-Response:
-{
-  "factors": ["出勤人数", "临时劳务人数", "固定劳务人数"],
-  "matrix": [[1.0, 0.87, 0.78], [0.87, 1.0, 0.45], [0.78, 0.45, 1.0]]
-}
-```
+**Python 端 JSON 字段命名约定**: 使用 camelCase（由 Pydantic model_config `alias_generator` 实现），确保与 Java VO 自动反序列化兼容
 
 #### Scenario: Python 服务正常调用因素排序
 
 - **WHEN** `AnalyticsClient.getFactors("12000004")` 被调用，且 Python 服务正常返回 JSON 数组
 - **THEN** 方法返回 `List<FactorRankVO>`，元素数量和内容与 Python 响应一致
 
+#### Scenario: Python 服务不可达时优雅降级
+
+- **WHEN** Python 服务未启动或网络不通，`AnalyticsClient.getFactors(...)` 被调用
+- **THEN** 方法返回空列表 `Collections.emptyList()`，日志输出 WARN 级别信息
+
 #### Scenario: Python 服务正常调用相关性矩阵
 
 - **WHEN** `AnalyticsClient.getCorrelation("12000004")` 被调用，且 Python 服务正常返回 JSON 对象
-- **THEN** 方法返回 `CorrelationMatrixVO`，其 `factors` 和 `matrix` 字段与 Python 响应一致
-
-#### Scenario: Python 服务连接超时
-
-- **WHEN** `AnalyticsClient.getFactors("12000004")` 被调用，但 Python 服务连接超时
-- **THEN** 方法记录 WARN 日志并返回空列表 `Collections.emptyList()`，不抛出异常
-
-#### Scenario: Python 服务返回 HTTP 500
-
-- **WHEN** `AnalyticsClient.getCorrelation("12000004")` 被调用，但 Python 服务返回 500 错误
-- **THEN** 方法记录 WARN 日志并返回空 `CorrelationMatrixVO`（factors 和 matrix 均为空列表），不抛出异常
-
-### Requirement: 统一响应格式和全局异常处理
-
-系统 SHALL 提供 `Result<T>` 统一响应包装类和 `GlobalExceptionHandler` 全局异常处理器。
-
-**Result<T>**: `com.kejie.whop.model.vo.Result`
-```java
-@Data
-public class Result<T> {
-    private int code;        // 200=成功, 500=错误
-    private String message;
-    private T data;
-
-    public static <T> Result<T> ok(T data);
-    public static <T> Result<T> error(String message);
-}
-```
-所有 Controller 方法的返回类型 MUST 为 `Result<T>`。
-
-**GlobalExceptionHandler**: `com.kejie.whop.config.GlobalExceptionHandler`
-- 使用 `@RestControllerAdvice` 注解
-- 捕获 `MethodArgumentNotValidException`，返回 `code=500`，message 包含字段校验详情
-- 捕获 `Exception`，返回 `code=500`，message 包含异常信息
-
-#### Scenario: 正常响应包装
-
-- **WHEN** Controller 方法正常执行并返回数据
-- **THEN** 响应 JSON 格式为 `{"code": 200, "message": "success", "data": ...}`
-
-#### Scenario: 参数校验失败
-
-- **WHEN** Controller 接收到不合法的 `@Valid` 参数（如缺少必填字段）
-- **THEN** `GlobalExceptionHandler` 捕获 `MethodArgumentNotValidException`，响应 `{"code": 500, "message": "参数校验失败: ...", "data": null}`
-
-#### Scenario: 未预期异常
-
-- **WHEN** Service 层抛出未捕获的 `RuntimeException`
-- **THEN** `GlobalExceptionHandler` 捕获异常，响应 `{"code": 500, "message": "异常信息", "data": null}`
+- **THEN** 方法返回 `CorrelationMatrixVO`，`factors` 列表包含 10 个因素名称，`matrix` 为 10×10 二维数组

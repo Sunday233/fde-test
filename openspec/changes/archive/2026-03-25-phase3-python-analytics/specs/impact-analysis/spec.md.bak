@@ -1,0 +1,49 @@
+## ADDED Requirements
+
+**所属服务**: analytics (Python FastAPI)
+
+### Requirement: Pearson 相关系数计算模块
+
+系统 SHALL 提供纯 Python 实现的 Pearson 相关系数计算模块 `services/correlation.py`。
+
+**算法来源**: 迁移自 `cost_analysis.py` 第 218–237 行的 Pearson 实现
+
+**不引入外部依赖**: 不使用 numpy / scipy / pandas，纯 Python 标准库实现
+
+**函数接口**:
+```python
+def pearson(x: list[float], y: list[float]) -> float:
+    """计算两个等长数值序列的 Pearson 相关系数。
+    样本数 < 5 时返回 0.0。
+    标准差为 0 时返回 0.0。
+    """
+
+def correlation_matrix(data: dict[str, list[float]]) -> tuple[list[str], list[list[float]]]:
+    """计算多因素之间的 Pearson 相关系数矩阵。
+    data: {factor_name: [values...]}
+    返回: (factor_names, matrix)
+    """
+```
+
+**Pearson 公式**:
+$$r = \frac{\sum_{i=1}^{n}(x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum_{i=1}^{n}(x_i - \bar{x})^2} \cdot \sqrt{\sum_{i=1}^{n}(y_i - \bar{y})^2}}$$
+
+#### Scenario: 正常计算相关系数
+
+- **WHEN** 调用 `pearson([1,2,3,4,5], [2,4,6,8,10])`
+- **THEN** 返回 `1.0`（完全正相关）
+
+#### Scenario: 样本不足返回零
+
+- **WHEN** 调用 `pearson([1,2,3], [2,4,6])`（少于 5 个样本）
+- **THEN** 返回 `0.0`
+
+#### Scenario: 标准差为零
+
+- **WHEN** 调用 `pearson([5,5,5,5,5], [1,2,3,4,5])`（x 标准差为 0）
+- **THEN** 返回 `0.0`
+
+#### Scenario: 计算相关性矩阵
+
+- **WHEN** 调用 `correlation_matrix({"a": [1,2,3,4,5], "b": [5,4,3,2,1], "c": [1,1,2,2,3]})`
+- **THEN** 返回 `(["a","b","c"], [[1.0, -1.0, r_ac], [-1.0, 1.0, r_bc], [r_ac, r_bc, 1.0]])`，对角线为 1.0
