@@ -25,8 +25,8 @@
 
 ## 6. 路由配置
 
-- [ ] 6.1 创建 `src/router/index.ts`：Vue Router 历史模式，5 个懒加载子路由嵌套在 MainLayout 下
-- [ ] 6.2 创建 5 个占位视图组件：`src/views/DashboardView.vue`、`BaselineView.vue`、`ImpactView.vue`、`EstimateView.vue`、`ReportView.vue`
+- [x] 6.1 创建 `src/router/index.ts`：Vue Router 历史模式，5 个懒加载子路由嵌套在 MainLayout 下
+- [x] 6.2 创建 5 个占位视图组件：`src/views/DashboardView.vue`、`BaselineView.vue`、`ImpactView.vue`、`EstimateView.vue`、`ReportView.vue`
 
 ## 7. 主布局组件
 
