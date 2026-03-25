@@ -17,7 +17,7 @@
 
 ## 4. API 请求层
 
-- [ ] 4.1 创建 `src/api/index.ts`：Axios 实例（baseURL: '/api', timeout: 30000）、响应拦截器（Result<T> 解包、错误提示）、所有 API 方法（dashboard、baseline、impact、estimate、report、warehouse 共 12 个方法）
+- [x] 4.1 创建 `src/api/index.ts`：Axios 实例（baseURL: '/api', timeout: 30000）、响应拦截器（Result<T> 解包、错误提示）、所有 API 方法（dashboard、baseline、impact、estimate、report、warehouse 共 12 个方法）
 
 ## 5. 状态管理
 
