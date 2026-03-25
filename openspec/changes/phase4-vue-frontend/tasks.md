@@ -13,7 +13,7 @@
 
 ## 3. TypeScript 类型定义
 
-- [ ] 3.1 创建 `src/types/api.ts`：定义 Result<T> 包装类型和所有 VO 接口（DashboardOverviewVO、TrendDataVO、MonthlyBaselineVO、WarehouseDetailVO、CompareResultVO、FactorRankVO、CorrelationMatrixVO、EstimateRequest、EstimateResultVO、ReportGenerateRequest、ReportVO、WarehouseVO）
+- [x] 3.1 创建 `src/types/api.ts`：定义 Result<T> 包装类型和所有 VO 接口（DashboardOverviewVO、TrendDataVO、MonthlyBaselineVO、WarehouseDetailVO、CompareResultVO、FactorRankVO、CorrelationMatrixVO、EstimateRequest、EstimateResultVO、ReportGenerateRequest、ReportVO、WarehouseVO）
 
 ## 4. API 请求层
 
