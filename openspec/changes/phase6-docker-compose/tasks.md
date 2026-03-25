@@ -26,6 +26,6 @@
 
 ## 6. README 部署说明
 
-- [ ] 6.1 在 `wh-op-platform/README.md` 新增「部署」章节，包含前置条件（Docker 20+、Compose v2、MySQL 网络可达）
-- [ ] 6.2 编写快速启动步骤（3 步：复制 .env → 填写密码 → docker compose up --build）、服务地址表、停止/清理命令
-- [ ] 6.3 编写常见问题排查（MySQL 连接超时、端口 80 冲突、首次构建慢）
+- [x] 6.1 在 `wh-op-platform/README.md` 新增「部署」章节，包含前置条件（Docker 20+、Compose v2、MySQL 网络可达）
+- [x] 6.2 编写快速启动步骤（3 步：复制 .env → 填写密码 → docker compose up --build）、服务地址表、停止/清理命令
+- [x] 6.3 编写常见问题排查（MySQL 连接超时、端口 80 冲突、首次构建慢）
