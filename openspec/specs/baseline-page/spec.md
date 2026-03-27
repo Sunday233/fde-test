@@ -1,34 +1,38 @@
 ## ADDED Requirements
 
-### Requirement: 筛选面板
+### Requirement: 区间筛选面板
 
 **所属服务**: frontend  
 **文件**: `src/views/BaselineView.vue`
 
-页面顶部 SHALL 展示一个筛选面板（`a-card` 包裹），包含以下筛选项横向排列：
+页面顶部 SHALL 展示一个筛选面板，包含以下查询条件：
 
-1. **仓库选择** — `a-select`，选项来自 `getWarehouses()` API，默认选中 `currentWarehouse`
-2. **年月选择** — `a-date-picker` 设置 `picker="month"` + `format="YYYY-MM"`，默认当前月
-3. **查询按钮** — `a-button type="primary"`，点击触发数据加载
+1. **开始月份**: `a-date-picker`，`picker="month"`，格式 `YYYY-MM`
+2. **结束月份**: `a-date-picker`，`picker="month"`，格式 `YYYY-MM`
+3. **仓库筛选**: `a-select`，选项来自 `getWarehouses()`，允许为空，为空时表示全部仓库
+4. **查询按钮**: `a-button type="primary"`
 
-**数据流**: 点击查询 → 调用 `getMonthlyBaseline(warehouseCode, year, month)` + `getWarehouseDetail(warehouseCode, year, month)` → 更新表格和图表。
+页面 SHALL 不再依赖全局顶部仓库切换器作为费用基线页面的数据源。
 
-#### Scenario: 筛选面板初始化
+#### Scenario: 默认加载最近一年数据
 - **WHEN** 用户进入费用基线页面
-- **THEN** 筛选面板 SHALL 展示仓库选择器（默认当前仓库）和月份选择器（默认当前月），并自动加载数据
+- **THEN** 页面 SHALL 调用 `getLatestBaselineMonth()` 获取最新可用月份
+- **AND** 默认设置 `endMonth = latestMonth`
+- **AND** 默认设置 `startMonth = latestMonth - 11 months`
+- **AND** 默认加载所有仓库在最近 12 个月内的月度基线数据
 
-#### Scenario: 点击查询
-- **WHEN** 用户修改筛选条件并点击查询按钮
-- **THEN** 页面 SHALL 根据新条件重新加载表格和图表数据
+#### Scenario: 手动查询区间数据
+- **WHEN** 用户修改月份区间或仓库后点击查询按钮
+- **THEN** 页面 SHALL 调用月度基线接口与每日明细接口重新加载页面数据
 
 ### Requirement: 月度基线数据表格
 
 **所属服务**: frontend  
 **文件**: `src/views/BaselineView.vue`
 
-筛选面板下方 SHALL 展示一个数据表格（`a-table`），展示月度基线汇总数据。
+筛选面板下方 SHALL 展示月度基线数据表格，支持分页。
 
-**数据源**: `getMonthlyBaseline()` → `MonthlyBaselineVO[]`
+**数据源**: `getMonthlyBaseline(warehouseCode, startMonth, endMonth, page, size)`
 
 **表格列定义**:
 | 列标题 | 字段 | 格式 |
@@ -36,64 +40,80 @@
 | 仓库 | warehouseName | 文本 |
 | 年份 | year | 数字 |
 | 月份 | month | 数字 |
-| 日均费用 | dailyAvgFee | ¥ 保留2位 |
-| 总费用 | totalFee | ¥ 保留2位 |
+| 日均费用 | dailyAvgFee | ¥ 保留 2 位 |
+| 总费用 | totalFee | ¥ 保留 2 位 |
 | 总单量 | totalOrders | 千分位 |
 | 总件数 | totalItems | 千分位 |
-| 单均成本 | costPerOrder | ¥ 保留2位 |
-| 件均成本 | costPerItem | ¥ 保留2位 |
-| 平均人数 | avgHeadcount | 保留1位 |
-| 总工时 | totalWorkHours | 保留1位 h |
-| 加权单价 | weightedUnitPrice | ¥ 保留2位 /h |
+| 件单比 | itemsPerOrder | 保留 2 位 |
+| 日均单量 | dailyAvgOrders | 保留 0 位 |
+| 单均成本 | costPerOrder | ¥ 保留 2 位 |
+| 件均成本 | costPerItem | ¥ 保留 2 位 |
+| 平均人数 | avgHeadcount | 保留 1 位 |
+| 人效 | laborEfficiency | 保留 2 位 + `件/人时` |
+| 固临比 | fixedTempRatio | 保留 2 位 |
+| 总工时 | totalWorkHours | 保留 1 位 + `h` |
+| 加权单价 | weightedUnitPrice | ¥ 保留 2 位 `/h` |
 
-**功能**: 支持分页（`pagination`）、行 key 用 `warehouseCode + year + month`。
+数据 SHALL 按月份倒序展示，同月内可包含多个仓库。
 
-#### Scenario: 展示月度基线表格
-- **WHEN** 基线数据加载完成
-- **THEN** SHALL 展示含 12 列的表格，数据与 API 返回匹配
+#### Scenario: 展示区间内多月数据
+- **WHEN** 用户查询一个跨月区间
+- **THEN** 表格 SHALL 展示该区间内所有月份的记录，而不是仅展示单月结果
 
-#### Scenario: 空数据
-- **WHEN** 筛选条件下无数据
-- **THEN** 表格 SHALL 展示 Ant Design Vue 默认空状态
-
-### Requirement: 劳务单价对比图
-
-**所属服务**: frontend  
-**文件**: `src/views/BaselineView.vue`
-
-表格下方 SHALL 展示一个柱状图（ECharts `BarChart`），对比各仓库的加权平均劳务单价。
-
-**数据源**: 从 `MonthlyBaselineVO[]` 提取 `warehouseName` 和 `weightedUnitPrice`。
-
-**图表配置**:
-- X 轴: 仓库名称
-- Y 轴: 单价（元/h）
-- 每个仓库一个柱子，不同月份用不同颜色区分
-- 启用 `TooltipComponent`
-
-#### Scenario: 展示劳务单价对比
-- **WHEN** 基线数据加载完成
-- **THEN** SHALL 展示各仓库的加权平均单价柱状图
-
-### Requirement: 双仓月度对比图
+### Requirement: 每日操作费用明细表
 
 **所属服务**: frontend  
 **文件**: `src/views/BaselineView.vue`
 
-页面 SHALL 提供双仓对比功能：两个 `a-select` 选择仓库 A 和仓库 B，点击"对比"按钮后展示分组柱状图。
+月度基线表格下方 SHALL 展示每日操作费用分析明细表，用于替代原“加权平均劳务单价对比柱状图”。
 
-**数据源**: 调用 `compareWarehouses([codeA, codeB], year, month)` → `CompareResultVO[]`
+**数据源**: `getDailyDetail(warehouseCode, startMonth, endMonth)`
 
-**图表配置** (ECharts `BarChart`):
-- X 轴: 对比维度（总费用、总单量、单均成本、件均成本、平均人数）
-- Y 轴: 数值
-- 两个 series，分别对应仓库 A 和仓库 B
-- 启用 `TooltipComponent` + `LegendComponent`
+**表格列定义**:
+| 列标题 | 字段 | 格式 |
+|---|---|---|
+| 日期 | date | `YYYY-MM-DD` |
+| 仓库 | warehouseName | 文本 |
+| 出库单量 | obOrders | 千分位 |
+| 出库件数 | obItems | 千分位 |
+| 件单比 | itemOrderRatio | 保留 2 位 |
+| 出勤人数 | headcount | 整数 |
+| 工时(h) | workHours | 保留 2 位 |
+| 当日费用(¥) | dailyFee | ¥ 保留 2 位 |
 
-#### Scenario: 双仓对比
-- **WHEN** 用户选择两个仓库并点击对比按钮
-- **THEN** SHALL 展示分组柱状图，并列对比两仓的核心指标
+该表 SHALL 支持分页，默认每页 30 条。
 
-#### Scenario: 未选齐仓库
-- **WHEN** 用户未选择两个仓库就点击对比
-- **THEN** SHALL 提示用户选择两个仓库
+#### Scenario: 无每日明细数据
+- **WHEN** 当前筛选条件下不存在每日费用明细
+- **THEN** 页面 SHALL 展示空状态提示
+
+### Requirement: 双仓月度趋势对比
+
+**所属服务**: frontend  
+**文件**: `src/views/BaselineView.vue`
+
+页面 SHALL 提供双仓趋势对比区域，包含：
+
+1. 仓库 A 选择器
+2. 仓库 B 选择器
+3. 对比按钮
+4. 指标切换按钮组
+5. 分组柱状图
+
+**数据源**: `compareWarehouses([codeA, codeB], startMonth, endMonth)`
+
+图表 SHALL 使用月份作为 X 轴，并基于以下指标进行切换：
+- 总费用 `totalFee`
+- 总单量 `totalOrders`
+- 单均成本 `costPerOrder`
+- 件均成本 `costPerItem`
+- 平均人数 `avgHeadcount`
+
+#### Scenario: 双仓区间趋势对比
+- **WHEN** 用户选择两个不同仓库并点击对比按钮
+- **THEN** 页面 SHALL 请求区间内两仓的月度对比数据
+- **AND** 图表 SHALL 以月份为 X 轴展示两个仓库的趋势对比
+
+#### Scenario: 仓库未选择完整
+- **WHEN** 用户未选择两个不同仓库
+- **THEN** 对比按钮 SHALL 不可用，页面不发起对比请求

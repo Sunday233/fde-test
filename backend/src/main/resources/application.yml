@@ -1,0 +1,24 @@
+server:
+  port: 3000
+
+spring:
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:10.126.50.199}:${MYSQL_PORT:3306}/${MYSQL_DB:wh_op_baseline}?useSSL=false&characterEncoding=UTF-8&connectionCollation=utf8mb4_unicode_ci&serverTimezone=Asia/Shanghai
+    username: ${MYSQL_USER:fdeuser}
+    password: ${MYSQL_PASSWORD:FDE2026!}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      read-only: true
+      maximum-pool-size: 10
+      minimum-idle: 2
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+
+analytics:
+  base-url: ${ANALYTICS_BASE_URL:http://localhost:8000}

@@ -1,0 +1,25 @@
+@import "tailwindcss" layer(utilities);
+
+/*
+  Fix: Ant Design v4 CSS-in-JS injects styles at runtime with compound selectors
+  like `.ant-card.css-[hash]` (specificity 0,2,0), which beats Tailwind's layered
+  single-class utilities like `.mb-6` (0,1,0 inside @layer).
+
+  Solution: Declare unlayered overrides prefixed with `#app` (ID specificity 1,0,0).
+  Specificity (1,1,0) beats any antd selector (0,x,y) regardless of source order.
+*/
+#app .mb-0  { margin-bottom: 0; }
+#app .mb-1  { margin-bottom: 0.25rem; }
+#app .mb-2  { margin-bottom: 0.5rem; }
+#app .mb-3  { margin-bottom: 0.75rem; }
+#app .mb-4  { margin-bottom: 1rem; }
+#app .mb-5  { margin-bottom: 1.25rem; }
+#app .mb-6  { margin-bottom: 1.5rem; }
+#app .mb-8  { margin-bottom: 2rem; }
+#app .mb-10 { margin-bottom: 2.5rem; }
+#app .mb-12 { margin-bottom: 3rem; }
+#app .mt-0  { margin-top: 0; }
+#app .mt-2  { margin-top: 0.5rem; }
+#app .mt-4  { margin-top: 1rem; }
+#app .mt-6  { margin-top: 1.5rem; }
+#app .mt-8  { margin-top: 2rem; }

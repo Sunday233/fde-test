@@ -1,0 +1,25 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+    env_file: .env
+    depends_on:
+      - analytics
+
+  analytics:
+    build:
+      context: ./analytics
+    env_file: .env
+    volumes:
+      - analytics-data:/data
+
+volumes:
+  analytics-data:
