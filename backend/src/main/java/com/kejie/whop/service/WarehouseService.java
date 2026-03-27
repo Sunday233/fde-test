@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -83,5 +84,21 @@ public class WarehouseService {
             }
         }
         return outboundWarehouseName;
+    }
+
+    /**
+     * 获取仓库(库房编码)下所有工厂编码列表（工作量统计表使用工厂编码）
+     */
+    public List<String> getFactoryCodesForWarehouse(String warehouseCode) {
+        QueryWrapper<OutboundOrder> qw = new QueryWrapper<>();
+        qw.select("DISTINCT 工厂编码")
+                .eq("库房编码", warehouseCode)
+                .isNotNull("工厂编码")
+                .ne("工厂编码", "");
+        List<Map<String, Object>> rows = outboundOrderMapper.selectMaps(qw);
+        return rows.stream()
+                .filter(r -> r != null && r.get("工厂编码") != null)
+                .map(r -> String.valueOf(r.get("工厂编码")))
+                .collect(Collectors.toList());
     }
 }

@@ -40,6 +40,27 @@ public class BaselineService {
 
     private static final BigDecimal TAX_RATE = new BigDecimal("0.06");
 
+    /**
+     * SQL CASE expression: derive normalized 操作大类 from raw 操作大类 + 单据类型.
+     * - Merges 手持出库→出库, 手持入库→入库, 手持在库→在库
+     * - When 操作大类 IS NULL, falls back to 单据类型 based classification
+     */
+    private static final String OP_CATEGORY_CASE =
+        "CASE " +
+        "WHEN 操作大类 IN ('出库','手持出库') THEN '出库' " +
+        "WHEN 操作大类 IN ('入库','手持入库') THEN '入库' " +
+        "WHEN 操作大类 IN ('在库','手持在库') THEN '在库' " +
+        "WHEN 操作大类 = '退货' THEN '退货' " +
+        "WHEN 操作大类 IS NULL THEN " +
+        "CASE " +
+        "WHEN 单据类型 LIKE '%入库%' AND 单据类型 NOT LIKE '%退货%' THEN '入库' " +
+        "WHEN 单据类型 LIKE '%退货%' THEN '退货' " +
+        "WHEN 单据类型 LIKE '%转储%' OR 单据类型 LIKE '%加工%' OR 单据类型 LIKE '%库存%' OR 单据类型 LIKE '%拆包%' THEN '在库' " +
+        "ELSE '出库' " +
+        "END " +
+        "ELSE '其他' " +
+        "END";
+
     public String getLatestMonth() {
         QueryWrapper<OutboundOrder> qw = new QueryWrapper<>();
         qw.select("MAX(DATE_FORMAT(创建时间, '%Y-%m')) as latestMonth");
@@ -333,13 +354,37 @@ public class BaselineService {
             monthFeeMap.put(monthLabel, totalFee);
             }
 
+            // 查找仓库对应的所有工厂编码（工作量表使用工厂编码，与库房编码不同）
+            List<String> factoryCodes = warehouseService.getFactoryCodesForWarehouse(whCode);
+            if (factoryCodes.isEmpty()) {
+                // 无工厂编码映射，跳过工作量查询
+                for (String monthLabel : monthFeeMap.keySet()) {
+                    BigDecimal totalFee = monthFeeMap.get(monthLabel);
+                    if (totalFee.compareTo(BigDecimal.ZERO) <= 0) continue;
+                    YearMonth ym = YearMonth.parse(monthLabel, DateTimeFormatter.ofPattern("yyyy-MM"));
+                    OperationFeeDetailVO vo = new OperationFeeDetailVO();
+                    vo.setDimension("month");
+                    vo.setYear(ym.getYear());
+                    vo.setMonth(ym.getMonthValue());
+                    vo.setMonthLabel(monthLabel);
+                    vo.setWarehouseCode(whCode);
+                    vo.setWarehouseName(whName);
+                    vo.setOperationCategory("未分类");
+                    vo.setOperationCount(0L);
+                    vo.setFeeRatio(BigDecimal.ONE.setScale(4, RoundingMode.HALF_UP));
+                    vo.setEstimatedFee(totalFee.setScale(2, RoundingMode.HALF_UP));
+                    result.add(vo);
+                }
+                continue;
+            }
+
             QueryWrapper<WorkloadStatisticsDetail> qw = new QueryWrapper<>();
             qw.select("DATE_FORMAT(操作时间, '%Y-%m') as ym",
-                    "IFNULL(操作大类, '未分类') as op_category",
+                    OP_CATEGORY_CASE + " as op_category",
                     "COUNT(*) as op_cnt")
-                    .eq("工厂编码", whCode)
+                    .in("工厂编码", factoryCodes)
                     .apply("DATE_FORMAT(操作时间, '%Y-%m') BETWEEN {0} AND {1}", startMonth, endMonth)
-                    .groupBy("DATE_FORMAT(操作时间, '%Y-%m')", "IFNULL(操作大类, '未分类')");
+                    .groupBy("DATE_FORMAT(操作时间, '%Y-%m')", OP_CATEGORY_CASE);
 
             List<Map<String, Object>> rows = workloadStatisticsDetailMapper.selectMaps(qw);
             Map<String, List<Map<String, Object>>> groupedByMonth = new LinkedHashMap<>();
@@ -433,13 +478,37 @@ public class BaselineService {
                 dayFeeMap.put(daily.getDate(), daily.getDailyFee());
             }
 
+            // 查找仓库对应的所有工厂编码
+            List<String> factoryCodes = warehouseService.getFactoryCodesForWarehouse(whCode);
+            if (factoryCodes.isEmpty()) {
+                for (String day : dayFeeMap.keySet()) {
+                    BigDecimal totalFee = dayFeeMap.get(day);
+                    if (totalFee.compareTo(BigDecimal.ZERO) <= 0) continue;
+                    LocalDate dt = LocalDate.parse(day);
+                    OperationFeeDetailVO vo = new OperationFeeDetailVO();
+                    vo.setDimension("day");
+                    vo.setDate(day);
+                    vo.setYear(dt.getYear());
+                    vo.setMonth(dt.getMonthValue());
+                    vo.setMonthLabel(String.format("%d-%02d", dt.getYear(), dt.getMonthValue()));
+                    vo.setWarehouseCode(whCode);
+                    vo.setWarehouseName(whName);
+                    vo.setOperationCategory("未分类");
+                    vo.setOperationCount(0L);
+                    vo.setFeeRatio(BigDecimal.ONE.setScale(4, RoundingMode.HALF_UP));
+                    vo.setEstimatedFee(totalFee.setScale(2, RoundingMode.HALF_UP));
+                    result.add(vo);
+                }
+                continue;
+            }
+
             QueryWrapper<WorkloadStatisticsDetail> qw = new QueryWrapper<>();
             qw.select("DATE_FORMAT(操作时间, '%Y-%m-%d') as dt",
-                    "IFNULL(操作大类, '未分类') as op_category",
+                    OP_CATEGORY_CASE + " as op_category",
                     "COUNT(*) as op_cnt")
-                    .eq("工厂编码", whCode)
+                    .in("工厂编码", factoryCodes)
                     .apply("DATE_FORMAT(操作时间, '%Y-%m') BETWEEN {0} AND {1}", startMonth, endMonth)
-                    .groupBy("DATE_FORMAT(操作时间, '%Y-%m-%d')", "IFNULL(操作大类, '未分类')");
+                    .groupBy("DATE_FORMAT(操作时间, '%Y-%m-%d')", OP_CATEGORY_CASE);
 
             List<Map<String, Object>> rows = workloadStatisticsDetailMapper.selectMaps(qw);
             Map<String, List<Map<String, Object>>> groupedByDay = new LinkedHashMap<>();
@@ -753,11 +822,15 @@ public class BaselineService {
     }
 
     private Map<String, BigDecimal> getWorkHoursBreakdown(String warehouseCode, String monthStr) {
-        // 从工作量统计表按操作大类聚合
+        // 从工作量统计表按操作大类聚合（使用统一分类逻辑，通过工厂编码映射）
+        List<String> factoryCodes = warehouseService.getFactoryCodesForWarehouse(warehouseCode);
+        if (factoryCodes.isEmpty()) {
+            return new LinkedHashMap<>();
+        }
         QueryWrapper<WorkloadStatisticsInfo> qw = new QueryWrapper<>();
-        qw.select("操作大类 as category", "COUNT(*) as cnt")
-                .eq("工厂编码", warehouseCode)
-                .groupBy("操作大类");
+        qw.select(OP_CATEGORY_CASE + " as category", "COUNT(*) as cnt")
+                .in("工厂编码", factoryCodes)
+                .groupBy(OP_CATEGORY_CASE);
         List<Map<String, Object>> rows = workloadStatisticsInfoMapper.selectMaps(qw);
 
         Map<String, BigDecimal> breakdown = new LinkedHashMap<>();
